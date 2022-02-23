@@ -7,17 +7,19 @@ namespace ListDir
     public class HardLister
     {
         private DirsCursor _cursor;
+        private int mainDirsCount;
         public void PrintDirectory(string path)
         {
+            mainDirsCount = Directory.GetDirectories(path).Length;
             //Check if we have there some directories
             if (Directory.GetDirectories(path).Length == 0)
             {
                 return;
             }
-            
+
             //initialize directory cursor
             _cursor = new DirsCursor();
-            
+            PrintDirectoryAndAllFilesInside(_cursor.GetDirs(), path);
             //main listing cycle
             bool run = true;
             while (run)
@@ -33,7 +35,7 @@ namespace ListDir
 
                 //Climbing
                 PrintDirectoryAndAllFilesInside(_cursor.GetDirs(), targetDir);
-                if (IsThereDirEnd())
+                if (IsDirEndThere())
                 {
                     do
                     {
@@ -43,8 +45,8 @@ namespace ListDir
                             run = false;
                             break;
                         }
-                        
-                    } while (IsThereDirEnd());
+
+                    } while (IsDirEndThere());
 
                     _cursor.IncreaseLastDirPointerByOne();
                 }
@@ -57,10 +59,14 @@ namespace ListDir
 
         private bool IsThisEndOfStructure()
         {
-            return _cursor.GetDirs()[0] + 1 == _cursor.GetDirsCount();
+            if ((_cursor.GetDirsCount() == 1) && (_cursor.GetDirs()[0] + 1 == mainDirsCount))
+            {
+                return true;
+            }
+            return false;
         }
 
-        private bool IsThereDirEnd()
+        private bool IsDirEndThere()
         {
             return Directory.GetDirectories(GetPathToDirByCursor(_cursor.GetCursorWithoutLastPointer())).Length ==
                     _cursor.GetLastItem() + 1;
@@ -84,7 +90,6 @@ namespace ListDir
                 string[] tempDirs = Directory.GetDirectories(targetDir);
                 targetDir += "\\" + Path.GetFileName(tempDirs[dirIndex]);
             }
-
             return targetDir;
         }
     }

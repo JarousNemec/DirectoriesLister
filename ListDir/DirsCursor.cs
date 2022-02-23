@@ -29,7 +29,9 @@ namespace ListDir
 
         public void RemoveLastDir()
         {
-            dirs.RemoveAt(dirs.Count - 1);
+            if (dirs.Count > 1) {
+                dirs.RemoveAt(dirs.Count - 1);
+            }
         }
 
         public void IncreaseLastDirPointerByOne()

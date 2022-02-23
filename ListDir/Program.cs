@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace ListDir
@@ -12,11 +8,21 @@ namespace ListDir
         static void Main(string[] args)
         {
             var hardLister = new HardLister();
-            hardLister.PrintDirectory(Directory.GetCurrentDirectory());
-            
-            Console.ReadKey();
-        }
+            var easyLister = new EasyLister();
 
-        
+            DateTime start = DateTime.Now;
+            hardLister.PrintDirectory(Directory.GetCurrentDirectory());
+            DateTime end = DateTime.Now;
+            long cycleDifferent = end.Ticks - start.Ticks;    
+
+            start = DateTime.Now;
+            easyLister.PrintDir(Directory.GetCurrentDirectory());
+            end = DateTime.Now;
+            long recurseDifferent = end.Ticks - start.Ticks;
+            Console.WriteLine();
+            Console.WriteLine("recurse - "+recurseDifferent);
+            Console.WriteLine("cycle   - "+cycleDifferent);
+            Console.ReadKey();
+        }        
     }
 }
